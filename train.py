@@ -114,41 +114,41 @@ def train(hyp):
     start_epoch = 0
     best_fitness = 0.0
     attempt_download(weights)
-    if weights.endswith('.pt'):  # pytorch format
-        # possible weights are '*.pt', 'yolov3-spp.pt', 'yolov3-tiny.pt' etc.
-        ckpt = torch.load(weights, map_location=device)
+    # if weights.endswith('.pt'):  # pytorch format
+    #     # possible weights are '*.pt', 'yolov3-spp.pt', 'yolov3-tiny.pt' etc.
+    #     ckpt = torch.load(weights, map_location=device)
 
-        # load model
-        try:
-            ckpt['model'] = {k: v for k, v in ckpt['model'].items() if model.state_dict()[k].numel() == v.numel()}
-            model.load_state_dict(ckpt['model'], strict=False)
-        except KeyError as e:
-            s = "%s is not compatible with %s. Specify --weights '' or specify a --cfg compatible with %s. " \
-                "See https://github.com/ultralytics/yolov3/issues/657" % (opt.weights, opt.cfg, opt.weights)
-            raise KeyError(s) from e
+    #     # load model
+    #     try:
+    #         ckpt['model'] = {k: v for k, v in ckpt['model'].items() if model.state_dict()[k].numel() == v.numel()}
+    #         model.load_state_dict(ckpt['model'], strict=False)
+    #     except KeyError as e:
+    #         s = "%s is not compatible with %s. Specify --weights '' or specify a --cfg compatible with %s. " \
+    #             "See https://github.com/ultralytics/yolov3/issues/657" % (opt.weights, opt.cfg, opt.weights)
+    #         raise KeyError(s) from e
 
-        # load optimizer
-        if ckpt['optimizer'] is not None:
-            optimizer.load_state_dict(ckpt['optimizer'])
-            best_fitness = ckpt['best_fitness']
+    #     # load optimizer
+    #     if ckpt['optimizer'] is not None:
+    #         optimizer.load_state_dict(ckpt['optimizer'])
+    #         best_fitness = ckpt['best_fitness']
 
-        # load results
-        if ckpt.get('training_results') is not None:
-            with open(results_file, 'w') as file:
-                file.write(ckpt['training_results'])  # write results.txt
+    #     # load results
+    #     if ckpt.get('training_results') is not None:
+    #         with open(results_file, 'w') as file:
+    #             file.write(ckpt['training_results'])  # write results.txt
 
-        # epochs
-        start_epoch = ckpt['epoch'] + 1
-        if epochs < start_epoch:
-            print('%s has been trained for %g epochs. Fine-tuning for %g additional epochs.' %
-                  (opt.weights, ckpt['epoch'], epochs))
-            epochs += ckpt['epoch']  # finetune additional epochs
+    #     # epochs
+    #     start_epoch = ckpt['epoch'] + 1
+    #     if epochs < start_epoch:
+    #         print('%s has been trained for %g epochs. Fine-tuning for %g additional epochs.' %
+    #               (opt.weights, ckpt['epoch'], epochs))
+    #         epochs += ckpt['epoch']  # finetune additional epochs
 
-        del ckpt
+    #     del ckpt
 
-    elif len(weights) > 0:  # darknet format
-        # possible weights are '*.weights', 'yolov3-tiny.conv.15',  'darknet53.conv.74' etc.
-        load_darknet_weights(model, weights)
+    # elif len(weights) > 0:  # darknet format
+    #     # possible weights are '*.weights', 'yolov3-tiny.conv.15',  'darknet53.conv.74' etc.
+    #     load_darknet_weights(model, weights)
 
     if opt.freeze_layers:
         output_layer_indices = [idx - 1 for idx, module in enumerate(model.module_list) if isinstance(module, YOLOLayer)]
