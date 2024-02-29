@@ -293,7 +293,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                             for x in self.img_files]
 
         # Read image shapes (wh)
-        sp = path.replace('.txt', '') + '.shapes'  # shapefile path
+        sp = path.split("/")[-1].replace(".txt", "") + '.shapes'  # shapefile path
         try:
             with open(sp, 'r') as f:  # read existing shapefile
                 s = [x.split() for x in f.read().splitlines()]
