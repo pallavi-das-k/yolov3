@@ -405,8 +405,8 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         assert nf > 0 or n == 20288, 'No labels found in %s. See %s' % (os.path.dirname(file) + os.sep, help_url)
         if not labels_loaded and n > 1000:
             print('Saving labels to %s for faster future loading' % np_labels_path)
-            np.save(np_labels_path, self.labels)  # save for next time
-
+            np.save("/kaggle/working/"+np_labels_path.split("/")[-1], self.labels)  # save for next time
+            
         # Cache images into memory for faster training (WARNING: large datasets may exceed system RAM)
         if cache_images:  # if training
             gb = 0  # Gigabytes of cached images
