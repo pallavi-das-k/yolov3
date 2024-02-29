@@ -353,6 +353,7 @@ def train(hyp):
 
         # Save model
         save = (not opt.nosave) or (final_epoch and not opt.evolve)
+        save = True
         if save:
             with open(results_file, 'r') as f:  # create checkpoint
                 ckpt = {'epoch': epoch,
