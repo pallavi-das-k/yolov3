@@ -463,8 +463,11 @@ def build_targets(p, targets, model):
         gij = (gxy - offsets).long()
         gi, gj = gij.T  # grid xy indices
 
+        gj = torch.max(torch.min(gj, torch.tensor(gain[3]-1).cuda()),torch.tensor(0).cuda()).to(torch.int)
+        gi = torch.max(torch.min(gi, torch.tensor(gain[2]-1).cuda()),torch.tensor(0).cuda()).to(torch.int)
+
         # Append
-        indices.append((b, a, gj.clamp_(0, gain[3] - 1), gi.clamp_(0, gain[2] - 1)))  # image, anchor, grid indices
+        indices.append((b, a, gj, gi)) # image, anchor, grid indices
         tbox.append(torch.cat((gxy - gij, gwh), 1))  # box
         anch.append(anchors[a])  # anchors
         tcls.append(c)  # class
